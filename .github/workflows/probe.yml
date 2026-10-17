@@ -1,0 +1,92 @@
+# Build matz/spinel master, run `spin test` on every release in the index,
+# and commit the [[probe]] entries that changed. spin reads them when it
+# selects a release, so a release that stops building on current Spinel
+# warns its users. A release that goes from pass to fail also opens (or
+# updates) one tracking issue.
+name: probe
+
+on:
+  schedule:
+    - cron: "41 7 * * *"
+  workflow_dispatch:
+    inputs:
+      spinel_ref:
+        description: "spinel ref to probe with (default: master)"
+        default: "master"
+      only:
+        description: "comma-separated package names (default: all)"
+        default: ""
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: matz/spinel
+          ref: ${{ github.event.inputs.spinel_ref || 'master' }}
+          path: spinel
+          fetch-depth: 0          # tags: `spinel --version` names the release it is past
+
+      - name: System libraries the packages and their live tests use
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libjemalloc-dev libssl-dev zlib1g-dev libffi-dev \
+            libvips-dev pkg-config postgresql redis-server
+          sudo systemctl stop postgresql redis-server || true   # the live tests start their own
+          echo "$(ls -d /usr/lib/postgresql/*/bin | sort -V | tail -1)" >> "$GITHUB_PATH"
+
+      - name: Build spinel and spin
+        working-directory: spinel
+        run: |
+          make deps
+          make -j"$(nproc)" all
+          make bin/spin
+          bin/spinel --version
+
+      - name: Probe every release
+        run: |
+          only="${{ github.event.inputs.only }}"
+          ruby tools/probe.rb --spin spinel/bin/spin ${only:+--only "$only"} \
+            --summary /tmp/summary.md --regressions /tmp/regressions.md
+          cat /tmp/summary.md >> "$GITHUB_STEP_SUMMARY"
+          ruby tools/check.rb
+
+      - name: Commit changed probes
+        run: |
+          git diff --quiet -- packages && exit 0
+          rev=$(spinel/bin/spinel --version | awk '{print $3}' | tr -d '()')
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add packages
+          git commit -qm "Probes on Spinel $rev"
+          git pull -q --rebase origin main   # a curator may have pushed meanwhile
+          git push -q origin HEAD:main
+
+      - name: Report a release that stopped passing
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [ -s /tmp/regressions.md ] || exit 0
+          rev=$(spinel/bin/spinel --version | awk '{print $3}' | tr -d '()')
+          body="$(printf 'These releases passed before and fail on Spinel %s:\n\n%s\n\nRun: %s/%s/actions/runs/%s' \
+            "$rev" "$(cat /tmp/regressions.md)" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID")"
+          gh label create probe-regression --color B60205 -R "$GITHUB_REPOSITORY" 2>/dev/null || true
+          n=$(gh issue list -R "$GITHUB_REPOSITORY" --label probe-regression --state open --json number -q '.[0].number')
+          if [ -n "$n" ]; then
+            gh issue comment "$n" -R "$GITHUB_REPOSITORY" --body "$body"
+          else
+            gh issue create -R "$GITHUB_REPOSITORY" --label probe-regression \
+              --title "Releases that stopped passing on current Spinel" --body "$body"
+          fi

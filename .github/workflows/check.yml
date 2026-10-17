@@ -1,0 +1,19 @@
+# Every entry the way spin will use it: each release's ref is a full SHA the
+# repo serves, and that commit's spin.toml carries the release's version.
+# Also lists what matz/spin-index has that this index lacks.
+name: check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: ruby tools/check.rb --upstream

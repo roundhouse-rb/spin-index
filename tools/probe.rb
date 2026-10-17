@@ -85,6 +85,12 @@ Dir.mktmpdir do |tmp|
       end
       rows << [e.name, v, result, tally || "-", detail.to_s, fresh ? "recorded" : "unchanged"]
       puts "#{result.ljust(4)} #{e.name} #{v} #{tally}#{detail ? " (#{detail})" : ""}#{fresh ? " [recorded]" : ""}"
+      unless ok
+        # the output of a failing run, folded in the Actions log
+        puts "::group::#{e.name} #{v}: spin test output (last 80 lines)" if ENV["GITHUB_ACTIONS"]
+        puts out.lines.last(80).join
+        puts "::endgroup::" if ENV["GITHUB_ACTIONS"]
+      end
       $stdout.flush
     end
   end

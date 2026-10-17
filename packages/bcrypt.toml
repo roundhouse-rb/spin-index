@@ -20,3 +20,10 @@ version = "0.1.1"
 spinel = "24fb088eb"
 result = "pass"
 date = "2026-10-17"
+
+[[probe]]
+version = "0.1.0"
+spinel = "22de42432"
+result = "fail"
+detail = "spin test: bcrypt_test.rb"
+date = "2026-10-17"

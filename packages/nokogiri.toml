@@ -44,3 +44,15 @@ spinel = "22de42432"
 result = "fail"
 detail = "spin test: loofah_surface_test.rb"
 date = "2026-10-17"
+
+[[probe]]
+version = "0.3.0"
+spinel = "0099e6cba"
+result = "pass"
+date = "2026-10-18"
+
+[[probe]]
+version = "0.3.1"
+spinel = "0099e6cba"
+result = "pass"
+date = "2026-10-18"

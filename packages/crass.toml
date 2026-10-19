@@ -10,3 +10,10 @@ version = "0.1.0"
 spinel = "1963b7732"
 result = "pass"
 date = "2026-09-29"
+
+[[probe]]
+version = "0.1.0"
+spinel = "257eb57b9"
+result = "fail"
+detail = "spin test: parse_test.rb, properties_test.rb, serialization_test.rb"
+date = "2026-10-19"

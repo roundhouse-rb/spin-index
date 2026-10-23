@@ -13,6 +13,10 @@ ref = "d388fceda77585b44b323c833beca971370d6d03"
 version = "0.2.0"
 ref = "527b3e3d48e1b787e156613255fb511793af7d6d"
 
+[[release]]
+version = "0.3.1"
+ref = "0863f7ea9e9cd6404b7ef15a2fed6e061c39f88e"
+
 [[probe]]
 version = "0.1.0"
 spinel = "6c8dfa95829b"

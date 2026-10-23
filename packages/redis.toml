@@ -34,3 +34,9 @@ version = "0.2.0"
 spinel = "24fb088eb"
 result = "pass"
 date = "2026-10-17"
+
+[[probe]]
+version = "0.3.1"
+spinel = "b34857b1c"
+result = "pass"
+date = "2026-10-23"

@@ -77,3 +77,24 @@ spinel = "257eb57b9"
 result = "fail"
 detail = "spin test: css_test.rb, finalizer.rb, fragment_test.rb, html5_corpus_test.rb, html5_test.rb, loofah_surface_test.rb, markdowner_test.rb, markup_test.rb, nodeset_test.rb, queries_test.rb, xml_test.rb"
 date = "2026-10-19"
+
+[[probe]]
+version = "0.2.0"
+spinel = "92e0867b9"
+result = "fail"
+detail = "spin test: finalizer.rb"
+date = "2026-10-24"
+
+[[probe]]
+version = "0.3.0"
+spinel = "92e0867b9"
+result = "fail"
+detail = "spin test: finalizer.rb"
+date = "2026-10-24"
+
+[[probe]]
+version = "0.3.1"
+spinel = "92e0867b9"
+result = "fail"
+detail = "spin test: finalizer.rb"
+date = "2026-10-24"

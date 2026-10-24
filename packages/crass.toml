@@ -24,3 +24,9 @@ spinel = "387ee7628"
 result = "fail"
 detail = "spin test: parse_test.rb"
 date = "2026-10-20"
+
+[[probe]]
+version = "0.1.0"
+spinel = "92e0867b9"
+result = "pass"
+date = "2026-10-24"

@@ -17,3 +17,9 @@ spinel = "257eb57b9"
 result = "fail"
 detail = "spin test: api_test.rb, documents_test.rb, links_html4_test.rb, links_html5_test.rb, sanitize_html4_test.rb, sanitize_html5_test.rb, scrub_test.rb, text_test.rb"
 date = "2026-10-19"
+
+[[probe]]
+version = "0.1.0"
+spinel = "92e0867b9"
+result = "pass"
+date = "2026-10-24"

@@ -98,3 +98,21 @@ spinel = "92e0867b9"
 result = "fail"
 detail = "spin test: finalizer.rb"
 date = "2026-10-24"
+
+[[probe]]
+version = "0.2.0"
+spinel = "821c18d79"
+result = "pass"
+date = "2026-10-28"
+
+[[probe]]
+version = "0.3.0"
+spinel = "821c18d79"
+result = "pass"
+date = "2026-10-28"
+
+[[probe]]
+version = "0.3.1"
+spinel = "821c18d79"
+result = "pass"
+date = "2026-10-28"

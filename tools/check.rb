@@ -5,6 +5,7 @@
 #
 # Usage: ruby tools/check.rb [--upstream]     (from the repo root)
 
+require "net/http"
 require "tmpdir"
 require_relative "index"
 
@@ -13,6 +14,23 @@ UPSTREAM = "https://github.com/matz/spin-index"
 def sh(*cmd)
   out = IO.popen(cmd, err: File::NULL, &:read)
   [$?.success?, out]
+end
+
+# Where a repository URL lives now. GitHub answers a transferred or
+# renamed repository's old URL with a redirect to its new one, so two
+# URLs that land on the same place name the same repository. A URL that
+# can't be reached is left as written, and then only an exact match counts.
+def resolved(url)
+  u = URI(url)
+  3.times do
+    res = Net::HTTP.start(u.host, u.port, use_ssl: u.scheme == "https",
+                          open_timeout: 10, read_timeout: 10) { |h| h.head(u.path) }
+    break unless res.is_a?(Net::HTTPRedirection) && res["location"]
+    u = URI.join(u, res["location"])
+  end
+  u.to_s.chomp("/")
+rescue StandardError
+  url.chomp("/")
 end
 
 errors = []
@@ -68,9 +86,10 @@ Dir.mktmpdir do |tmp|
       mine = ours[u.name]
       if mine.nil?
         puts "upstream has #{u.name}, which this index lacks"
-      elsif mine.repo != u.repo
+      elsif mine.repo != u.repo && resolved(mine.repo) != resolved(u.repo)
         errors << "#{u.name}: repo #{mine.repo} differs from upstream's #{u.repo}"
       else
+        puts "#{u.name}: upstream's #{u.repo} redirects to #{mine.repo}" if mine.repo != u.repo
         u.releases.each do |r|
           m = mine.releases.find { |x| x["version"] == r["version"] }
           if m.nil?

@@ -116,3 +116,24 @@ version = "0.3.1"
 spinel = "821c18d79"
 result = "pass"
 date = "2026-10-28"
+
+[[probe]]
+version = "0.2.0"
+spinel = "5943a94b1"
+result = "fail"
+detail = "spin test: finalizer.rb, fragment_test.rb, html5_corpus_test.rb, markdowner_test.rb, markup_test.rb, xml_test.rb"
+date = "2026-11-05"
+
+[[probe]]
+version = "0.3.0"
+spinel = "5943a94b1"
+result = "fail"
+detail = "spin test: finalizer.rb, fragment_test.rb, html5_corpus_test.rb, loofah_surface_test.rb, markdowner_test.rb, markup_test.rb, xml_test.rb"
+date = "2026-11-05"
+
+[[probe]]
+version = "0.3.1"
+spinel = "5943a94b1"
+result = "fail"
+detail = "spin test: finalizer.rb, fragment_test.rb, html5_corpus_test.rb, loofah_surface_test.rb, markdowner_test.rb, markup_test.rb, xml_test.rb"
+date = "2026-11-05"

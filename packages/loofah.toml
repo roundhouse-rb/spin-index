@@ -23,3 +23,10 @@ version = "0.1.0"
 spinel = "92e0867b9"
 result = "pass"
 date = "2026-10-24"
+
+[[probe]]
+version = "0.1.0"
+spinel = "3ab04131c"
+result = "fail"
+detail = "spin test: api_test.rb"
+date = "2026-11-19"
